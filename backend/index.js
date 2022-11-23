@@ -48,6 +48,8 @@ app.get("/test", async (req, res) => {
     });
 });
 
+module.exports = pool;
+
 // app.get("/test", async (req, res) => {
 //   let conn;
 //   try {
