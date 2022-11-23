@@ -3,11 +3,10 @@
 // const pool = mariadb.createPool({
 //   host: "109.237.211.172",
 //   user: "test",
-//   password: "Welkom",
+//   password: "Welk0m",
 //   connectionLimit: 5,
 //   database: "Ventosportdb",
 // });
-
 
 // pool
 //   .getConnection()
