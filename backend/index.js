@@ -2,7 +2,7 @@ const { text, json } = require("express");
 const http = require("http");
 const express = require("express");
 const mariadb = require("mariadb");
-// import "./database/connection";
+const cors = require('cors');
 
 const pool = mariadb.createPool({
   host: "109.237.211.172",
@@ -12,20 +12,18 @@ const pool = mariadb.createPool({
   database: "Ventosportdb",
 });
 
-// const pool = mariadb.createPool({
-//   host: "127.0.0.1",
-//   user: "root",
-//   password: "Ventosport",
-//   connectionLimit: 5,
-// });
+const db = pool;
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
+app.use(cors());
 
 app.get("/api", (req, res) => {
   res.json({ message: "Server is aan!" });
 });
+
+app.use('/test/register', require('./Routes/users'))
 
 app.get("/test", async (req, res) => {
   pool
@@ -77,3 +75,5 @@ app.get("/test", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
+
+module.exports = db
