@@ -73,68 +73,65 @@ router.post("/", async function (req, res) {
 
 //Login an existing user
 router.post("/login", async function (req, res) {
-  pool
-    .getConnection()
-    .then((conn) => {
-      //Check if username exist
-      conn
-        .query(`Select * from users WHERE username = ?`, req.body.username)
+  pool.getConnection().then((conn) => {
+    //Check if username exist
+    conn
+      .query(`Select * from users WHERE username = ?`, req.body.username)
 
-        //If username exist
-        .then((user) => {
-          //compare the entered and hashed password
-          bcrypt
-            .compare(req.body.password, user[0].password)
+      //If username exist
+      .then((user) => {
+        //compare the entered and hashed password
+        bcrypt
+          .compare(req.body.password, user[0].password)
 
-            //If passwords match
-            .then((passwordCheck) => {
-              //Check if passwords match
-              if (!passwordCheck) {
-                return res.status(400).send({
-                  message: "Passwords do not match",
-                  l: req.body.username,
-                  k: user[0].password,
-                });
-              }
+          //If passwords match
+          .then((passwordCheck) => {
+            //Check if passwords match
+            if (!passwordCheck) {
+              return res.status(400).send({
+                message: "Passwords do not match",
+                l: req.body.username,
+                k: user[0].password,
+              });
+            }
 
-              //Create JWT token
-              const token = jwt.sign(
-                {
-                  userId: user[0].id,
-                  username: user[0].username,
-                },
-                "Random Token",
-                {
-                  expiresIn: "24h",
-                }
-              );
-
-              //Return successful response
-              res.status(200).send({
-                message: "Login Successful",
+            //Create JWT token
+            const token = jwt.sign(
+              {
+                userId: user[0].id,
                 username: user[0].username,
-                token,
-              });
-            })
+              },
+              "Random Token",
+              {
+                expiresIn: "24h",
+              }
+            );
 
-            //Catch if passwords don't match
-            .catch((e) => {
-              res.status(404).send({
-                message: "Passwords dont match",
-                e,
-              });
+            //Return successful response
+            res.status(200).send({
+              message: "Login Successful",
+              username: user[0].username,
+              token,
             });
-        })
+          })
 
-        // catch error if username doesn't exist
-        .catch((e) => {
-          res.status(400).send({
-            message: "Username not found",
-            e,
+          //Catch if passwords don't match
+          .catch((e) => {
+            res.status(404).send({
+              message: "Passwords dont match",
+              e,
+            });
           });
+      })
+
+      // catch error if username doesn't exist
+      .catch((e) => {
+        res.status(400).send({
+          message: "Username not found",
+          e,
         });
-    })
-    .catch((err) => res.status(400).json("error: " + err));
+      });
+  });
 });
 
 module.exports = router;
