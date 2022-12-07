@@ -7,10 +7,14 @@ router.get("/", async function (req, res) {
   pool
     .getConnection()
     .then((conn) => {
-      conn.query("SELECT * from listing").then((rows) => {
-        res.json(rows);
-        conn.end();
-      });
+      conn
+        .query(
+          " SELECT listing.*, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing INNER JOIN categories ON listing.category = categories.category_id INNER JOIN subcategory ON subcategory.subcategory_id = listing.subcategory"
+        )
+        .then((rows) => {
+          res.json(rows);
+          conn.end();
+        });
     })
 
     .catch((err) => res.status(400).json("Error " + err));
@@ -20,10 +24,14 @@ router.get("/all", async function (req, res) {
   pool
     .getConnection()
     .then((conn) => {
-      conn.query("SELECT * from listing").then((rows) => {
-        res.json(rows);
-        conn.end();
-      });
+      conn
+        .query(
+          "SELECT listing.*, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing INNER JOIN categories ON listing.category = categories.category_id INNER JOIN subcategory ON subcategory.subcategory_id = listing.subcategory"
+        )
+        .then((rows) => {
+          res.json(rows);
+          conn.end();
+        });
     })
     .catch((err) => res.status(400).json("Error " + err));
 });
