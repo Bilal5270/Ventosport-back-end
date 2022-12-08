@@ -9,7 +9,7 @@ router.get("/", async function (req, res) {
     .then((conn) => {
       conn
         .query(
-          "          SELECT listing.*, users.city, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing INNER JOIN categories ON listing.category = categories.category_id INNER JOIN subcategory ON subcategory.subcategory_id = listing.subcategory INNER JOIN users ON users.user_id = listing.user_id"
+          "SELECT listing.*, users.city, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing INNER JOIN categories ON listing.category = categories.category_id INNER JOIN subcategory ON subcategory.subcategory_id = listing.subcategory INNER JOIN users ON users.user_id = listing.user_id"
         )
         .then((rows) => {
           res.json(rows);
@@ -26,7 +26,7 @@ router.get("/all", async function (req, res) {
     .then((conn) => {
       conn
         .query(
-          "          SELECT listing.*, users.city, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing INNER JOIN categories ON listing.category = categories.category_id INNER JOIN subcategory ON subcategory.subcategory_id = listing.subcategory INNER JOIN users ON users.user_id = listing.user_id"
+          "SELECT listing.*, users.city, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing INNER JOIN categories ON listing.category = categories.category_id INNER JOIN subcategory ON subcategory.subcategory_id = listing.subcategory INNER JOIN users ON users.user_id = listing.user_id"
         )
         .then((rows) => {
           res.json(rows);
@@ -41,10 +41,14 @@ router.get("/recent", async function (req, res) {
   pool
     .getConnection()
     .then((conn) => {
-      conn.query("SELECT * from listing ORDER BY date DESC").then((rows) => {
-        res.json(rows);
-        conn.end();
-      });
+      conn
+        .query(
+          "SELECT listing.*, users.city, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing INNER JOIN categories ON listing.category = categories.category_id INNER JOIN subcategory ON subcategory.subcategory_id = listing.subcategory INNER JOIN users ON users.user_id = listing.user_id ORDER BY listing.date DESC"
+        )
+        .then((rows) => {
+          res.json(rows);
+          conn.end();
+        });
     })
     .catch((err) => res.status(400).json("Error " + err));
 });
