@@ -9,7 +9,7 @@ router.get("/", async function (req, res) {
     .then((conn) => {
       conn
         .query(
-          " SELECT listing.*, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing INNER JOIN categories ON listing.category = categories.category_id INNER JOIN subcategory ON subcategory.subcategory_id = listing.subcategory"
+          "          SELECT listing.*, users.city, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing INNER JOIN categories ON listing.category = categories.category_id INNER JOIN subcategory ON subcategory.subcategory_id = listing.subcategory INNER JOIN users ON users.user_id = listing.user_id"
         )
         .then((rows) => {
           res.json(rows);
@@ -26,7 +26,7 @@ router.get("/all", async function (req, res) {
     .then((conn) => {
       conn
         .query(
-          "SELECT listing.*, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing INNER JOIN categories ON listing.category = categories.category_id INNER JOIN subcategory ON subcategory.subcategory_id = listing.subcategory"
+          "          SELECT listing.*, users.city, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing INNER JOIN categories ON listing.category = categories.category_id INNER JOIN subcategory ON subcategory.subcategory_id = listing.subcategory INNER JOIN users ON users.user_id = listing.user_id"
         )
         .then((rows) => {
           res.json(rows);
