@@ -13,6 +13,9 @@ app.use(express.json());
 const testRoute = require("./Routes/users");
 app.use("/users", testRoute);
 
+const adRoute = require('./Routes/PlaceAd');
+app.use('/placeAd', adRoute);
+
 const listingRoute = require("./Routes/listings");
 app.use("/listings", listingRoute);
 

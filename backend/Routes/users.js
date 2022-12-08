@@ -4,6 +4,9 @@ const pool = require("../database/connection");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
+
+
 //Get al users
 router.get("/", async function (req, res) {
   pool
@@ -60,8 +63,8 @@ router.post("/", async function (req, res) {
             phone,
             address,
             zipcode,
-          ]
-        )
+          ])
+
         .then(() => {
           res.json("User added");
           conn.end();
@@ -112,6 +115,7 @@ router.post("/login", async function (req, res) {
               message: "Login Successful",
               username: user[0].username,
               token,
+              user: user[0].user_id
             });
           })
 
