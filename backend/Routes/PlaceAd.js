@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require("../database/connection");
 
 router.post("/", async function (req, res) {
-  const user = req.body.username;
+  const user = req.body.user_id;
   const title = req.body.title;
   const description = req.body.description;
   const state = req.body.state;
@@ -40,9 +40,17 @@ router.post("/", async function (req, res) {
           });
           conn.end();
         })
-        .catch((err) => res.status(400).json("Error: " + err));
+        .catch((err) =>
+          res.status(400).json({
+            message: "Error: " + err,
+          })
+        );
     })
-    .catch((err) => res.status(400).json("Error: " + err));
+    .catch((err) =>
+      res.status(400).json({
+        message: "Error: " + err,
+      })
+    );
 });
 
 router.get("/categories", async function (req, res) {
@@ -62,12 +70,15 @@ router.get("/categories", async function (req, res) {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-router.get("/subcategories", async function (req, res) {
+router.get("/subcategories/:id", async function (req, res) {
   pool
     .getConnection()
     .then((conn) => {
       conn
-        .query(`SELECT name, subcategory_id AS id FROM subcategory`)
+        .query(
+          `SELECT name, subcategory_id AS id FROM subcategory WHERE category_id = ?`,
+          req.params["id"]
+        )
         .then((rows) => {
           res.json(rows);
           conn.end();
