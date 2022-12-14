@@ -53,6 +53,15 @@ router.get("/recent", async function (req, res) {
     .catch((err) => res.status(400).json("Error " + err));
 });
 
+router.get("/cities", async function (req, res) {
+  pool.getConnection().then((conn) => {
+    conn.query("SELECT city from users").then((rows) => {
+      res.json(rows);
+      conn.end();
+    });
+  });
+});
+
 // //get listings sorted by popularity
 // router.get("/items/popular", async function (req, res) {
 //   pool
