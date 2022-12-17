@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../database/connection');
+const checkAuth = require('../middleware/checkAuth.js');
 
-router.post('/', async function (req, res) {
+router.post('/', checkAuth, async function (req, res) {
 
     const user = req.body.username;
     const title = req.body.title;
