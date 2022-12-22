@@ -4,9 +4,6 @@ const pool = require("../database/connection");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-
-
-
 //Get al users
 router.get("/", async function (req, res) {
   pool
@@ -48,7 +45,14 @@ router.post("/", async function (req, res) {
 
   const cryptedPassword = await bcrypt.hash(password, 10);
 
-  pool
+  pool.getConnection().then(async (conn) => {
+    const user = await conn.query('SELECT email, username FROM users WHERE email = ?', req.body.email);
+    
+    if (user) {
+      console.log("De email is al in gebruik");
+      return res.status(400).send({ error: "De email is al in gebruik" });
+    } else {
+      pool
     .getConnection()
     .then((conn) => {
       conn
@@ -72,6 +76,8 @@ router.post("/", async function (req, res) {
         .catch((err) => res.status(400).json("Error: " + err));
     })
     .catch((err) => res.status(400).json("Error: " + err));
+    }
+  })  
 });
 
 //Login an existing user
