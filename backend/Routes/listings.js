@@ -1,3 +1,4 @@
+const { response } = require("express");
 const express = require("express");
 const router = express.Router();
 const pool = require("../database/connection");
@@ -52,14 +53,42 @@ router.get("/recent", async function (req, res) {
     })
     .catch((err) => res.status(400).json("Error " + err));
 });
-
-router.get("/cities", async function (req, res) {
+//list of all the cities
+router.get("/city", async function (req, res) {
   pool.getConnection().then((conn) => {
-    conn.query("SELECT city from users").then((rows) => {
+    conn.query("SELECT city FROM users").then((rows) => {
       res.json(rows);
       conn.end();
     });
   });
+});
+
+router.get("/cities", async function (req, res) {
+  pool.getConnection().then((conn) => {
+    conn
+      .query("SELECT * FROM users WHERE users.city LIKE 'a%'")
+      .then((rows) => {
+        res.json(rows);
+        conn.end();
+      });
+  });
+});
+
+router.post("/search", async (req, res) => {
+  const keyword = req.body.keyword;
+
+  console.log("Keyword received:", keyword);
+
+  connection.connect();
+
+  const query = "SELECT * FROM users WHERE users.city LIKE '?'";
+
+  connection.query(query, [`%${keyword}%`], function (error, results, fields) {
+    if (error) throw error;
+    res.send(results);
+  });
+
+  connection.end();
 });
 
 // //get listings sorted by popularity
