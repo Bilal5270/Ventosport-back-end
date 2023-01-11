@@ -49,6 +49,24 @@ router.get("/all", async function (req, res) {
     .catch((err) => res.status(400).json("Error " + err));
 });
 
+router.get("/me", async function (req, res) {
+  const UserID = req.user.id;
+  pool
+    .getConnection()
+    .then((conn) => {
+      conn
+        .query(
+          "SELECT listing.*, users.city, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing LEFT JOIN categories ON listing.category = categories.category_id LEFT JOIN subcategory ON subcategory.subcategory_id = listing.subcategory LEFT JOIN users ON users.user_id = listing.user_id WHERE listing.user_id = ?",
+          UserID
+        )
+        .then((rows) => {
+          res.json(rows);
+          conn.end();
+        });
+    })
+    .catch((err) => res.status(400).json("Error " + err));
+});
+
 //get listings sorted by date
 router.get("/recent", async function (req, res) {
   pool
