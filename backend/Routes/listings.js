@@ -83,43 +83,6 @@ router.get("/recent", async function (req, res) {
     })
     .catch((err) => res.status(400).json("Error " + err));
 });
-//list of all the cities
-router.get("/city", async function (req, res) {
-  pool.getConnection().then((conn) => {
-    conn.query("SELECT city FROM users").then((rows) => {
-      res.json(rows);
-      conn.end();
-    });
-  });
-});
-
-router.get("/cities", async function (req, res) {
-  pool.getConnection().then((conn) => {
-    conn
-      .query("SELECT * FROM users WHERE users.city LIKE 'a%'")
-      .then((rows) => {
-        res.json(rows);
-        conn.end();
-      });
-  });
-});
-
-router.post("/search", async (req, res) => {
-  const keyword = req.body.keyword;
-
-  console.log("Keyword received:", keyword);
-
-  connection.connect();
-
-  const query = "SELECT * FROM users WHERE users.city LIKE '?'";
-
-  connection.query(query, [`%${keyword}%`], function (error, results, fields) {
-    if (error) throw error;
-    res.send(results);
-  });
-
-  connection.end();
-});
 
 // //get listings sorted by popularity
 // router.get("/items/popular", async function (req, res) {
@@ -261,5 +224,29 @@ router.delete(
       .catch((err) => res.status(400).json("Error " + err));
   }
 );
+
+router.get("/:listing_id", async function (req, res) {
+  pool
+
+    .getConnection()
+
+    .then((conn) => {
+      conn
+
+        .query(
+          "SELECT listing.*, users.city,users.username, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing LEFT JOIN categories ON listing.category = categories.category_id LEFT JOIN subcategory ON subcategory.subcategory_id = listing.subcategory LEFT JOIN users ON users.user_id = listing.user_id WHERE listing_id = ?",
+
+          req.params["listing_id"]
+        )
+
+        .then((rows) => {
+          res.json(rows);
+
+          conn.end();
+        });
+    })
+
+    .catch((err) => res.status(400).json("Error " + err));
+});
 
 module.exports = router;
