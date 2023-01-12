@@ -99,20 +99,25 @@ router.get("/recent", async function (req, res) {
 //     .catch((err) => res.status(400).json("Error " + err));
 // });
 
-//get items sorted by price (low to high)
 router.get("/low-to-high", async function (req, res) {
   pool
+
     .getConnection()
+
     .then((conn) => {
       conn
+
         .query(
           "SELECT listing.*, users.city, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing LEFT JOIN categories ON listing.category = categories.category_id LEFT JOIN subcategory ON subcategory.subcategory_id = listing.subcategory LEFT JOIN users ON users.user_id = listing.user_id ORDER BY price ASC"
         )
+
         .then((rows) => {
           res.json(rows);
+
           conn.end();
         });
     })
+
     .catch((err) => res.status(400).json("Error " + err));
 });
 
@@ -227,25 +232,18 @@ router.delete(
 
 router.get("/:listing_id", async function (req, res) {
   pool
-
     .getConnection()
-
     .then((conn) => {
       conn
-
         .query(
           "SELECT listing.*, users.city,users.username, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing LEFT JOIN categories ON listing.category = categories.category_id LEFT JOIN subcategory ON subcategory.subcategory_id = listing.subcategory LEFT JOIN users ON users.user_id = listing.user_id WHERE listing_id = ?",
-
-          req.params["listing_id"]
+          req.params.listing_id
         )
-
         .then((rows) => {
           res.json(rows);
-
           conn.end();
         });
     })
-
     .catch((err) => res.status(400).json("Error " + err));
 });
 
