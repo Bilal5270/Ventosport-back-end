@@ -83,43 +83,6 @@ router.get("/recent", async function (req, res) {
     })
     .catch((err) => res.status(400).json("Error " + err));
 });
-//list of all the cities
-router.get("/city", async function (req, res) {
-  pool.getConnection().then((conn) => {
-    conn.query("SELECT city FROM users").then((rows) => {
-      res.json(rows);
-      conn.end();
-    });
-  });
-});
-
-router.get("/cities", async function (req, res) {
-  pool.getConnection().then((conn) => {
-    conn
-      .query("SELECT * FROM users WHERE users.city LIKE 'a%'")
-      .then((rows) => {
-        res.json(rows);
-        conn.end();
-      });
-  });
-});
-
-router.post("/search", async (req, res) => {
-  const keyword = req.body.keyword;
-
-  console.log("Keyword received:", keyword);
-
-  connection.connect();
-
-  const query = "SELECT * FROM users WHERE users.city LIKE '?'";
-
-  connection.query(query, [`%${keyword}%`], function (error, results, fields) {
-    if (error) throw error;
-    res.send(results);
-  });
-
-  connection.end();
-});
 
 // //get listings sorted by popularity
 // router.get("/items/popular", async function (req, res) {
