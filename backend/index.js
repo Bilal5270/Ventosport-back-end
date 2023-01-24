@@ -10,11 +10,14 @@ app.use(express.json());
 
 //Routes
 
+const bidRoute = require("./Routes/bids");
+app.use("/bids", bidRoute);
+
 const testRoute = require("./Routes/users");
 app.use("/users", testRoute);
 
-const adRoute = require('./Routes/PlaceAd');
-app.use('/placeAd', adRoute);
+const adRoute = require("./Routes/PlaceAd");
+app.use("/placeAd", adRoute);
 
 const listingRoute = require("./Routes/listings");
 app.use("/listings", listingRoute);
