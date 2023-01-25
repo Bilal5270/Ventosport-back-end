@@ -46,38 +46,45 @@ router.post("/", async function (req, res) {
   const cryptedPassword = await bcrypt.hash(password, 10);
 
   pool.getConnection().then(async (conn) => {
-    const user = await conn.query('SELECT email, username FROM users WHERE email = ?', req.body.email);
-    
-    if (user) {
+    const user = await conn.query(
+      "SELECT email, username FROM users WHERE email = ?",
+      [email]
+    );
+
+    console.log(user.length);
+    if (!user.length == 0) {
       console.log("De email is al in gebruik");
+      // console.log(email);
+      // console.log(user);
       return res.status(400).send({ error: "De email is al in gebruik" });
     } else {
       pool
-    .getConnection()
-    .then((conn) => {
-      conn
-        .query(
-          `INSERT INTO users (password, email, username, firstname, lastname, phone, address, zipcode) VALUES (?,?,?,?,?,?,?,?)`,
-          [
-            cryptedPassword,
-            email,
-            username,
-            firstname,
-            lastname,
-            phone,
-            address,
-            zipcode,
-          ])
+        .getConnection()
+        .then((conn) => {
+          conn
+            .query(
+              `INSERT INTO users (password, email, username, firstname, lastname, phone, address, zipcode) VALUES (?,?,?,?,?,?,?,?)`,
+              [
+                cryptedPassword,
+                email,
+                username,
+                firstname,
+                lastname,
+                phone,
+                address,
+                zipcode,
+              ]
+            )
 
-        .then(() => {
-          res.json("User added");
-          conn.end();
+            .then(() => {
+              res.json("User added");
+              conn.end();
+            })
+            .catch((err) => res.status(400).json("Error: " + err));
         })
         .catch((err) => res.status(400).json("Error: " + err));
-    })
-    .catch((err) => res.status(400).json("Error: " + err));
     }
-  })  
+  });
 });
 
 //Login an existing user
@@ -121,7 +128,7 @@ router.post("/login", async function (req, res) {
               message: "Login Successful",
               username: user[0].username,
               token,
-              user: user[0].user_id
+              user: user[0].user_id,
             });
           })
 
