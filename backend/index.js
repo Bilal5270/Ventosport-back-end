@@ -14,6 +14,9 @@ app.use(express.json());
 
 //Routes
 
+const bidRoute = require("./Routes/bids");
+app.use("/bids", bidRoute);
+
 const testRoute = require("./Routes/users");
 app.use("/users", testRoute);
 
@@ -28,6 +31,8 @@ app.get("/image/:fileName", function (req, res) {
   res.type("image/png");
   fs.createReadStream(filePath).pipe(res);
 });
+const PaymentRoute = require("./Routes/Payment");
+app.use("/Payment", PaymentRoute);
 
 //Running server on Port
 app.listen(PORT, () => {
