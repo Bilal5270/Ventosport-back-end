@@ -19,6 +19,9 @@ app.use('/placeAd', adRoute);
 const listingRoute = require("./Routes/listings");
 app.use("/listings", listingRoute);
 
+const PaymentRoute = require("./Routes/Payment");
+app.use("/Payment", PaymentRoute);
+
 //Running server on Port
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
