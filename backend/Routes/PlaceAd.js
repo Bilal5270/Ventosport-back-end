@@ -25,10 +25,12 @@ router.post("/", upload.single("image"), async function (req, res) {
   const subcategory = req.body.subcategory;
   const bid = req.body.bid;
   const price = req.body.price;
-  const image = req.file;
+  const image = req.file.filename;
   const status = req.body.status;
 
   console.log(req.file);
+
+  console.log(req.file.filename);
 
   pool
     .getConnection()
