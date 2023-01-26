@@ -26,6 +26,9 @@ app.use("/placeAd", adRoute);
 const listingRoute = require("./Routes/listings");
 app.use("/listings", listingRoute);
 
+const categoryRoute = require("./Routes/categories");
+app.use("/categories", categoryRoute);
+
 app.get("/image/:fileName", function (req, res) {
   const filePath = path.join(__dirname, "uploads", req.params.fileName);
   res.type("image/png");

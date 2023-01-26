@@ -28,6 +28,8 @@ router.post("/", upload.single("image"), async function (req, res) {
   const image = req.file.filename;
   const status = req.body.status;
 
+  console.log(req.file);
+
   console.log(req.file.filename);
 
   pool
