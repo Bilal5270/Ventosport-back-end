@@ -216,17 +216,39 @@ router.delete(
   async function (req, res) {
     const user_id = req.params.user_id;
     const listing_id = req.params.listing_id;
-    const query = `DELETE FROM liked WHERE user_id = ${user_id} AND listing_id = ${listing_id}`;
+    const query = `DELETE FROM listing WHERE user_id = ${user_id} AND listing_id = ${listing_id}`;
     pool
       .getConnection()
       .then((conn) => {
-        conn.query(query, [user_id, listing_id]).then((rows) => {
+        conn.query(query, []).then((rows) => {
           conn.end();
         });
       })
       .catch((err) => res.status(400).json("Error " + err));
   }
 );
+
+//delete My listing
+router.delete("/my/delete/:user_id/:listing_id", async function (req, res) {
+  const user_id = req.params.user_id;
+  const listing_id = req.params.listing_id;
+  console.log(user_id, listing_id);
+
+  const query = `DELETE FROM listing WHERE user_id = ${user_id} AND listing_id = ${listing_id}`;
+  pool
+    .getConnection()
+    .then((conn) => {
+      conn.query(query, [user_id, listing_id]).then((rows) => {
+        console.log("ok");
+        res.json([]);
+        conn.end();
+      });
+    })
+    .catch((err) => {
+      console.log(" ere");
+      res.status(400).json("Error " + err);
+    });
+});
 
 router.get("/:listing_id", async function (req, res) {
   pool
