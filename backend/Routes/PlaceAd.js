@@ -1,22 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const multer = require('multer');
+const multer = require("multer");
 const pool = require("../database/connection");
 
 const storage = multer.diskStorage({
-    destination: (req, file, callback) => {
-        callback(null, "uploads/")
-    },
-    filename: (req, file, callback) => {
-        callback(null, `image-${Date.now()}.${file.originalname}`)
-    }
-})
+  destination: (req, file, callback) => {
+    callback(null, "uploads/");
+  },
+  filename: (req, file, callback) => {
+    callback(null, `image-${Date.now()}.${file.originalname}`);
+  },
+});
 
 const upload = multer({
-    storage: storage
-})
+  storage: storage,
+});
 
-router.post("/", upload.single('image'), async function (req, res) {
+router.post("/", upload.single("image"), async function (req, res) {
   const user = req.body.user_id;
   const title = req.body.title;
   const description = req.body.description;
@@ -25,10 +25,12 @@ router.post("/", upload.single('image'), async function (req, res) {
   const subcategory = req.body.subcategory;
   const bid = req.body.bid;
   const price = req.body.price;
-  const image = req.file;
+  const image = req.file.filename;
   const status = req.body.status;
 
-  console.log(req.file)
+  console.log(req.file);
+
+  console.log(req.file.filename);
 
   pool
     .getConnection()

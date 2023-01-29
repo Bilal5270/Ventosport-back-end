@@ -2,6 +2,7 @@ const { response } = require("express");
 const express = require("express");
 const router = express.Router();
 const pool = require("../database/connection");
+
 const allQuery =
   "SELECT listing.*, users.city, categories.name AS category_name, subcategory.name AS subcategory_name FROM listing LEFT JOIN categories ON listing.category = categories.category_id LEFT JOIN subcategory ON subcategory.subcategory_id = listing.subcategory LEFT JOIN users ON users.user_id = listing.user_id";
 
@@ -40,6 +41,12 @@ router.get("/all", async function (req, res) {
     .getConnection()
     .then((conn) => {
       conn.query(allQuery).then((rows) => {
+        // for (const adv of rows) {
+        //   fetch(`http://localhost:3001/${adv.image}`).then((result) => {
+        //     const b64 = Buffer.from(result.arrayBuffer()).toString("base64");
+        //     adv.productAfbeelding = "data:'image/png;base64," + b64;
+        //   });
+        // }
         res.json(rows);
         conn.end();
       });
@@ -216,17 +223,39 @@ router.delete(
   async function (req, res) {
     const user_id = req.params.user_id;
     const listing_id = req.params.listing_id;
-    const query = `DELETE FROM liked WHERE user_id = ${user_id} AND listing_id = ${listing_id}`;
+    const query = `DELETE FROM listing WHERE user_id = ${user_id} AND listing_id = ${listing_id}`;
     pool
       .getConnection()
       .then((conn) => {
-        conn.query(query, [user_id, listing_id]).then((rows) => {
+        conn.query(query, []).then((rows) => {
           conn.end();
         });
       })
       .catch((err) => res.status(400).json("Error " + err));
   }
 );
+
+//delete My listing
+router.delete("/my/delete/:user_id/:listing_id", async function (req, res) {
+  const user_id = req.params.user_id;
+  const listing_id = req.params.listing_id;
+  console.log(user_id, listing_id);
+
+  const query = `DELETE FROM listing WHERE user_id = ${user_id} AND listing_id = ${listing_id}`;
+  pool
+    .getConnection()
+    .then((conn) => {
+      conn.query(query, [user_id, listing_id]).then((rows) => {
+        console.log("ok");
+        res.json([]);
+        conn.end();
+      });
+    })
+    .catch((err) => {
+      console.log(" ere");
+      res.status(400).json("Error " + err);
+    });
+});
 
 router.get("/:listing_id", async function (req, res) {
   pool
